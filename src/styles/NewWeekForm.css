@@ -1,0 +1,10 @@
+section:nth-of-type(3) {
+  min-height: 80px;
+  padding: 20px 0;
+
+  button {
+    font-size: 100%;
+    display: flex;
+    gap: 10px;
+  }
+}

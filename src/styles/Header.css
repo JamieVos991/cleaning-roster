@@ -1,14 +1,4 @@
-section {
-  display: flex;
-  flex-direction: column;
-  min-height: 150px;
-  align-items: center;
-  text-align: center;
-  gap: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
+section:nth-of-type(1) {
   h1 {
     font-size: 130%;
     display: flex;

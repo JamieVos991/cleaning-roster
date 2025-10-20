@@ -14,6 +14,7 @@ import {
 
 import Header from "./components/Header/Header";
 import WeekSection from "./components/WeekSection/WeekSection";
+import NewWeekForm from "./components/NewWeekForm/NewWeekForm";
 
 import { getWeekNumber, getWeekDateRange } from "./helpers/dateUtils";
 import { afvalData } from "./helpers/afvalData";
@@ -185,22 +186,14 @@ function App() {
             />
           );
         })}
-
-        {editNewWeek && (
-          <div className="new-week-form">
-            <input
-              type="date"
-              value={newWeekDate}
-              onChange={(e) => setNewWeekDate(e.target.value)}
-            />
-            <button onClick={addWeeklyList}>➕ Nieuwe week toevoegen</button>
-          </div>
-        )}
-
-        <button className="edit-new-week-btn" onClick={toggleEditNewWeek}>
-          ✏️ Edit Week Input
-        </button>
       </section>
+      <NewWeekForm
+        editNewWeek={editNewWeek}
+        newWeekDate={newWeekDate}
+        setNewWeekDate={setNewWeekDate}
+        addWeeklyList={addWeeklyList}
+        toggleEditNewWeek={toggleEditNewWeek}
+      />
     </main>
   );
 }
