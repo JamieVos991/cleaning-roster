@@ -1,0 +1,16 @@
+div {
+  padding-top: 10px;
+
+  .trash-span {
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    justify-content: center;
+    padding: 0 10px;
+  }
+
+  p:nth-of-type(2) {
+    font-weight: 600;
+  }
+}

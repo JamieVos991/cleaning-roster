@@ -14,3 +14,12 @@ body {
 :root {
   --groene-kleur: #41a67e;
 }
+
+button {
+  background: none;
+  border: none;
+}
+
+li {
+  list-style: none;
+}
