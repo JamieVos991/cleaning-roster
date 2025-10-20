@@ -109,9 +109,9 @@ export default function WeekSection({
                         }
                       >
                         <option value="">Wat moet er gedaan worden?</option>
-                        <option value="Jamie">Keuken</option>
-                        <option value="Tiara">Badkamer</option>
-                        <option value="Nuala">Toilet</option>
+                        <option value="Keuken">Keuken</option>
+                        <option value="Badkamer">Badkamer</option>
+                        <option value="Toilet">Toilet</option>
                       </select>
                     </div>
 
