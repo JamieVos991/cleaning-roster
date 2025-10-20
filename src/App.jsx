@@ -67,9 +67,11 @@ function getWeekDateRange(year, week) {
 function App() {
   const [lists, setLists] = useState([]);
   const [items, setItems] = useState({});
+  const [collapsedWeeks, setCollapsedWeeks] = useState({});
   const [newWeekDate, setNewWeekDate] = useState("");
   const [newItemText, setNewItemText] = useState({});
   const [today, setToday] = useState("");
+  const [newItemName, setNewItemName] = useState({});
   const [editWeeks, setEditWeeks] = useState({});
   const [editNewWeek, setEditNewWeek] = useState(false);
 
@@ -122,6 +124,12 @@ function App() {
     );
   };
 
+  const toggleCollapseWeek = (weekKey) =>
+    setCollapsedWeeks((prev) => ({
+      ...prev,
+      [weekKey]: !prev[weekKey],
+    }));
+
   const addWeeklyList = async () => {
     if (!newWeekDate) return alert("Kies een datum om de week te starten.");
     const selectedDate = new Date(newWeekDate);
@@ -146,14 +154,19 @@ function App() {
 
   const addItem = async (listId) => {
     const text = newItemText[listId];
-    if (!text) return;
+    const name = newItemName[listId];
+    if (!text || !name) return alert("Vul zowel een taak als een naam in.");
+
     await addDoc(collection(db, "listItems"), {
       listId,
       text,
+      name,
       done: false,
       createdAt: serverTimestamp(),
     });
+
     setNewItemText({ ...newItemText, [listId]: "" });
+    setNewItemName({ ...newItemName, [listId]: "" });
   };
 
   const deleteItem = async (id) => await deleteDoc(doc(db, "listItems", id));
@@ -221,6 +234,31 @@ function App() {
             return (
               <div key={key} className="week-section">
                 <h2>
+                  <button
+                    onClick={() => toggleCollapseWeek(key)}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      transform: collapsedWeeks[key]
+                        ? "rotate(-90deg)"
+                        : "rotate(0deg)",
+                      transition: "transform 0.2s ease",
+                    }}
+                  >
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M6.34317 7.75732L4.92896 9.17154L12 16.2426L19.0711 9.17157L17.6569 7.75735L12 13.4142L6.34317 7.75732Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </button>
                   {weekLists[0].name} ({getWeekDateRange(weekYear, weekNum)})
                   <button onClick={() => toggleEditWeek(key)}>
                     <svg
@@ -263,146 +301,179 @@ function App() {
                     </svg>
                   </button>
                 </h2>
-
-                {weekLists.map((list) => (
-                  <div key={list.id} className="list">
-                    <ul>
-                      {(items[list.id] || []).map((item) => (
-                        <li
-                          key={item.id}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.5rem",
-                          }}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={item.done}
-                            onChange={() => toggleItemDone(item)}
-                          />
-                          <p
-                            style={{
-                              margin: 0,
-                              textDecoration: item.done
-                                ? "line-through"
-                                : "none",
-                            }}
-                          >
-                            {item.text}
-                          </p>
-                          <button
-                            onClick={() => deleteItem(item.id)}
-                            style={{
-                              background: "none",
-                              border: "none",
-                              cursor: "pointer",
-                            }}
-                          >
-                            <svg
-                              width="18"
-                              height="18"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
+                {!collapsedWeeks[key] && (
+                  <>
+                    {weekLists.map((list) => (
+                      <div key={list.id} className="list">
+                        <ul>
+                          {(items[list.id] || []).map((item) => (
+                            <li
+                              key={item.id}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.5rem",
+                              }}
                             >
-                              <path
-                                d="M8 11C7.44772 11 7 11.4477 7 12C7 12.5523 7.44772 13 8 13H16C16.5523 13 17 12.5523 17 12C17 11.4477 16.5523 11 16 11H8Z"
-                                fill="currentColor"
+                              <input
+                                type="checkbox"
+                                checked={item.done}
+                                onChange={() => toggleItemDone(item)}
                               />
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12ZM21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                                fill="currentColor"
-                              />
-                            </svg>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-
-                    {editWeeks[key] && (
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: "0.5rem",
-                          marginTop: "0.5rem",
-                        }}
-                      >
-                        <input
-                          type="text"
-                          value={newItemText[list.id] || ""}
-                          onChange={(e) =>
-                            setNewItemText({
-                              ...newItemText,
-                              [list.id]: e.target.value,
-                            })
-                          }
-                          placeholder="Nieuw item..."
-                        />
-                        <button onClick={() => addItem(list.id)}>➕</button>
-                      </div>
-                    )}
-                  </div>
-                ))}
-
-                {weekTrash.length > 0 && (
-                  <div className="trash-list" style={{ marginTop: "0.5rem" }}>
-                    <ul>
-                      {weekTrash.map((item, index) => {
-                        let bgColor;
-                        switch (item.afvalstroom_id) {
-                          case 6: // papier
-                            bgColor = "#9ECFD4";
-                            break;
-                          case 2: // GFT
-                            bgColor = "#B0CE88";
-                            break;
-                          case 5: // plastic
-                            bgColor = "#FF714B";
-                            break;
-                          default:
-                            bgColor = "#ccc";
-                        }
-
-                        return (
-                          <span
-                            key={index}
-                            style={{
-                              backgroundColor: bgColor,
-                              display: "flex",
-                              flexDirection: "column",
-                              padding: ".9rem 0.5rem",
-                              borderRadius: "4px",
-                              fontSize: "90%",
-                              fontWeight: "400",
-                            }}
-                          >
-                            <div>
-                              <p>
-                                {new Date(item.ophaaldatum).toLocaleDateString(
-                                  "nl-NL",
-                                  {
-                                    weekday: "long",
-                                    day: "numeric",
-                                    month: "long",
-                                  }
-                                )}
-                              </p>
-                              <p
+                              <div
                                 style={{
-                                  fontWeight: "600",
+                                  display: "flex",
+                                  flexDirection: "column",
                                 }}
                               >
-                                {item.naam}{" "}
-                              </p>
-                            </div>
-                          </span>
-                        );
-                      })}
-                    </ul>
-                  </div>
+                                <p
+                                  style={{
+                                    margin: 0,
+                                    textDecoration: item.done
+                                      ? "line-through"
+                                      : "none",
+                                  }}
+                                >
+                                  {item.text}
+                                </p>
+                                {item.name && (
+                                  <small
+                                    style={{
+                                      color: "#666",
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    {item.name}
+                                  </small>
+                                )}
+                              </div>
+
+                              <button
+                                onClick={() => deleteItem(item.id)}
+                                style={{
+                                  background: "none",
+                                  border: "none",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                <svg
+                                  width="18"
+                                  height="18"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M8 11C7.44772 11 7 11.4477 7 12C7 12.5523 7.44772 13 8 13H16C16.5523 13 17 12.5523 17 12C17 11.4477 16.5523 11 16 11H8Z"
+                                    fill="currentColor"
+                                  />
+                                  <path
+                                    fillRule="evenodd"
+                                    clipRule="evenodd"
+                                    d="M23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12ZM21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                                    fill="currentColor"
+                                  />
+                                </svg>
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+
+                        {editWeeks[key] && (
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: "0.5rem",
+                              marginTop: "0.5rem",
+                            }}
+                          >
+                            <input
+                              type="text"
+                              value={newItemText[list.id] || ""}
+                              onChange={(e) =>
+                                setNewItemText({
+                                  ...newItemText,
+                                  [list.id]: e.target.value,
+                                })
+                              }
+                              placeholder="Wat moet er gedaan worden..."
+                            />
+                            <input
+                              type="text"
+                              value={newItemName[list.id] || ""}
+                              onChange={(e) =>
+                                setNewItemName({
+                                  ...newItemName,
+                                  [list.id]: e.target.value,
+                                })
+                              }
+                              placeholder="Naam of verantwoordelijke..."
+                            />
+                            <button onClick={() => addItem(list.id)}>
+                              ➕ Toevoegen
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+
+                    {weekTrash.length > 0 && (
+                      <div
+                        className="trash-list"
+                        style={{ marginTop: "0.5rem" }}
+                      >
+                        <ul>
+                          {weekTrash.map((item, index) => {
+                            let bgColor;
+                            switch (item.afvalstroom_id) {
+                              case 6:
+                                bgColor = "#9ECFD4";
+                                break;
+                              case 2:
+                                bgColor = "#B0CE88";
+                                break;
+                              case 5:
+                                bgColor = "#FF714B";
+                                break;
+                              default:
+                                bgColor = "#ccc";
+                            }
+
+                            return (
+                              <span
+                                key={index}
+                                style={{
+                                  backgroundColor: bgColor,
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  padding: ".9rem 0.5rem",
+                                  borderRadius: "4px",
+                                  fontSize: "90%",
+                                  fontWeight: "400",
+                                }}
+                              >
+                                <div>
+                                  <p>
+                                    {new Date(
+                                      item.ophaaldatum
+                                    ).toLocaleDateString("nl-NL", {
+                                      weekday: "long",
+                                      day: "numeric",
+                                      month: "long",
+                                    })}
+                                  </p>
+                                  <p style={{ fontWeight: "600" }}>
+                                    {item.naam}
+                                  </p>
+                                </div>
+                              </span>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             );
