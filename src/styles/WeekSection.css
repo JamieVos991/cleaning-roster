@@ -95,3 +95,29 @@ section:nth-of-type(2) {
     }
   }
 }
+
+.past-week p {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.past-week button {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.past-week {
+  text-decoration: line-through;
+  color: #999;
+  pointer-events: none; /* optional: prevent click if inside <p> */
+}
+
+.past-week .week-title {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.past-week button {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

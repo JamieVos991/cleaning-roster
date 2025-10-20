@@ -125,7 +125,7 @@ export default function WeekSection({
                           })
                         }
                       >
-                        <option value="">Selecteer naam</option>
+                        <option value="">Selecteer een naam</option>
                         <option value="Jamie">Jamie</option>
                         <option value="Tiara">Tiara</option>
                         <option value="Nuala">Nuala</option>
