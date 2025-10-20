@@ -8,7 +8,7 @@ export default function TrashList({ weekTrash }) {
   };
 
   return (
-    <div>
+    <li className="li-trash">
       {weekTrash.map((item, i) => (
         <span
           className="trash-span"
@@ -25,6 +25,6 @@ export default function TrashList({ weekTrash }) {
           <p>{item.naam}</p>
         </span>
       ))}
-    </div>
+    </li>
   );
 }

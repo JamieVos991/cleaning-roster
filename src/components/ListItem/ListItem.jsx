@@ -2,7 +2,7 @@ import "../../styles/ListItem.css";
 
 export default function ListItem({ item, toggleItemDone, deleteItem }) {
   return (
-    <li>
+    <li className="li-listitem">
       <div className="checkbox-wrapper">
         <input
           type="checkbox"
@@ -18,7 +18,7 @@ export default function ListItem({ item, toggleItemDone, deleteItem }) {
         </label>
       </div>
 
-      <article>
+      <article className="article-listitem">
         <p className={item.done ? "done" : ""}>
           {item.text} • {item.name}
         </p>

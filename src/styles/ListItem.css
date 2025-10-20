@@ -1,4 +1,4 @@
-li {
+.li-listitem {
   width: 100%;
   align-items: center;
   padding: 13px 10px;
@@ -15,7 +15,7 @@ li {
     display: flex;
   }
 
-  article {
+  .article-listitem {
     display: flex;
     flex-direction: column;
     margin-left: 0.5rem;
@@ -24,10 +24,6 @@ li {
     small {
       font-size: 0.8rem;
       color: #666;
-    }
-
-    p {
-      margin: 0;
     }
 
     p.done {

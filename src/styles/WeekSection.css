@@ -23,6 +23,21 @@ section:nth-of-type(2) {
       button {
         display: flex;
       }
+
+      button.collapse-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      button.collapse-btn svg {
+        transition: transform 0.2s ease;
+      }
+
+      button.collapse-btn:not(.collapsed) svg {
+        transform: rotate(-90deg);
+      }
     }
 
     ul {
@@ -31,19 +46,52 @@ section:nth-of-type(2) {
       gap: 10px;
     }
 
-    button.collapse-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
+    .ul-inputs {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding-top: 10px;
+      padding-right: 8px;
 
-    button.collapse-btn svg {
-      transition: transform 0.2s ease;
-    }
+      .li-input {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 5px;
 
-    button.collapse-btn:not(.collapsed) svg {
-      transform: rotate(-90deg);
+        .select-wrapper {
+          position: relative;
+          display: flex;
+          width: 95%;
+        }
+
+        .select-wrapper select {
+          width: 95%;
+          padding: 10px 40px 10px 10px;
+          font-size: 1rem;
+          border: 1px solid #ccc;
+          border-radius: 6px;
+          background-color: #fff;
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          cursor: pointer;
+        }
+
+        .select-wrapper::after {
+          content: "";
+          position: absolute;
+          right: 30px;
+          top: 50%;
+          width: 10px;
+          height: 10px;
+          pointer-events: none;
+          background: url("data:image/svg+xml;utf8,<svg fill='black' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6.343 7.757L4.929 9.172 12 16.243l7.071-7.071-1.414-1.415L12 13.414z'/></svg>")
+            no-repeat center center;
+          background-size: 10px;
+          transform: translateY(-50%);
+        }
+      }
     }
   }
 }
