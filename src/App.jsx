@@ -92,7 +92,31 @@ function App() {
 
     const unsub = onSnapshot(collection(db, "cleaningLists"), (snapshot) => {
       const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setLists(data.sort((a, b) => a.date?.seconds - b.date?.seconds));
+      const unsub = onSnapshot(collection(db, "cleaningLists"), (snapshot) => {
+        const data = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        const sorted = data.sort((a, b) => a.date?.seconds - b.date?.seconds);
+        setLists(sorted);
+
+        // ✅ Bepaal huidige week & jaar
+        const now = new Date();
+        const currentWeek = getWeekNumber(now);
+        const currentYear = now.getFullYear();
+
+        // ✅ Stel collapsedWeeks in zodat ALLES dicht is,
+        // behalve de huidige week (die is open = false)
+        const newCollapsed = {};
+        sorted.forEach((list) => {
+          const key = `${list.year}-W${list.week}`;
+          newCollapsed[key] = !(
+            list.week === currentWeek && list.year === currentYear
+          );
+        });
+
+        setCollapsedWeeks(newCollapsed);
+      });
     });
     return () => unsub();
   }, []);
@@ -408,7 +432,7 @@ function App() {
                                   [list.id]: e.target.value,
                                 })
                               }
-                              placeholder="Naam of verantwoordelijke..."
+                              placeholder="Naam..."
                             />
                             <button onClick={() => addItem(list.id)}>
                               ➕ Toevoegen
