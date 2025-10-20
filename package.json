@@ -1,6 +1,6 @@
 {
-  "name": "my-app",
-  "homepage": "https://jamievos991.github.io/cleaning-roster",
+  "name": "cleaning-roster",
+  "homepage": "http://jamievos991.github.io/cleaning-roster",
   "private": true,
   "version": "0.0.0",
   "type": "module",
