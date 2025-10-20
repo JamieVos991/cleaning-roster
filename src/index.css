@@ -23,3 +23,15 @@ button {
 li {
   list-style: none;
 }
+
+button,
+input,
+select,
+textarea {
+  -webkit-appearance: none;
+  appearance: none;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+}
