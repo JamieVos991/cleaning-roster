@@ -50,7 +50,7 @@ export default function NewWeekForm({
             type="text"
             readOnly
             value={newWeekDate || ""}
-            placeholder="Selecteer datum"
+            placeholder="Selecteer een datum"
             onClick={() => setShowCalendar(true)}
           />
 
